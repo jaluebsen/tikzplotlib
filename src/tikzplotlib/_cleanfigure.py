@@ -380,11 +380,11 @@ def _replace_data_with_NaN(data, id_replace, is3D):
     else:
         xData, yData = _split_data_2D(data)
 
-    xData[id_replace] = np.NaN
-    yData[id_replace] = np.NaN
+    xData[id_replace] = np.nan
+    yData[id_replace] = np.nan
     if is3D:
         zData = zData.copy()
-        zData[id_replace] = np.NaN
+        zData[id_replace] = np.nan
 
     if is3D:
         new_data = _stack_data_3D(xData, yData, zData)

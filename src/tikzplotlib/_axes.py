@@ -1,8 +1,30 @@
 import matplotlib as mpl
 import numpy as np
-from matplotlib.backends.backend_pgf import (
-    common_texification as mpl_common_texification,
-)
+import matplotlib as mpl
+
+
+def mpl_common_texification(string):
+    if mpl.rcParams["text.usetex"]:
+        return str(string)
+
+    # This is a reimplementation of matplotlib's private _common_texification,
+    # which has been moved around and is not available in recent versions.
+    # It escapes special TeX characters.
+    s = str(string)
+    s = s.replace("\\", r"\textbackslash")
+    s = s.replace("&", r"\&")
+    s = s.replace("%", r"\%")
+    s = s.replace("$", r"\$")
+    s = s.replace("#", r"\#")
+    s = s.replace("_", r"\_")
+    s = s.replace("{", r"\{")
+    s = s.replace("}", r"\}")
+    s = s.replace("~", r"\textasciitilde{}")
+    s = s.replace("^", r"\textasciicircum{}")
+    # In matplotlib, this is only done for non-usetex.
+    # We do it for all.
+    s = s.replace("−", "-")  # U+2212
+    return s
 
 from . import _color
 
@@ -571,15 +593,22 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # store the label anyway
         label = ticklabel.get_text()
 
+        # If the string is of the form `$\\mathdefault{...}$`,
+        # extract the content.
+        clean_label = label
+        if clean_label.startswith("$\\mathdefault{") and clean_label.endswith("}$"):
+            clean_label = clean_label[len("$\\mathdefault{") : -2]
+
         if not ticklabel.get_visible():
             is_label_required = True
             break
 
-        if not label:
+        if not clean_label:
             continue
 
         try:
-            label_float = float(label.replace("\N{MINUS SIGN}", "-"))
+            # Replace unicode minus with hyphen
+            label_float = float(clean_label.replace("−", "-"))
         except ValueError:
             is_label_required = True
             break
@@ -592,6 +621,13 @@ def _get_ticks(data, xy, ticks, ticklabels):
     pgfplots_ticklabels = []
     for tick, ticklabel in zip(ticks, ticklabels):
         label = ticklabel.get_text()
+        # If the string is of the form `$\\mathdefault{...}$`,
+        # extract the content and drop the math mode.
+        # pgfplots will typeset tick labels in math mode by default.
+        if label.startswith("$\\mathdefault{") and label.endswith("}$"):
+            label = label[len("$\\mathdefault{") : -2]
+            label = label.replace("−", "-")  # U+2212
+
         if "," in label:
             label = "{" + label + "}"
         pgfplots_ticklabels.append(_common_texification(label))

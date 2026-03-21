@@ -12,7 +12,11 @@ def get_legend_text(obj):
     if leg is None:
         return None
 
-    keys = [h.get_label() for h in leg.legendHandles if h is not None]
+    try:
+        handles = leg.legend_handles
+    except AttributeError:
+        handles = leg.legendHandles
+    keys = [h.get_label() for h in handles if h is not None]
     values = [t.get_text() for t in leg.texts]
 
     label = obj.get_label()

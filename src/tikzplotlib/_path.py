@@ -467,7 +467,7 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
 
         # get defaults
         default_dashOffset, default_dashSeq = mpl.lines._get_dash_pattern(line_style)
-
+        default_dashSeq = [dash / sum(default_dashSeq) for dash in default_dashSeq]  # normalize to the on+off cycle length
         # get dash format of line under test
         if hasattr(line, "get_dashes"):
             dashOffset, dashSeq = line.get_dashes()
@@ -477,8 +477,8 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
             # for older matplotlib versions
             dashSeq = line._us_dashSeq
             dashOffset = line._us_dashOffset
-
         lst = list()
+        dashSeq = [dash / sum(dashSeq) for dash in dashSeq]  # normalize to the on+off cycle length 
         if dashSeq != default_dashSeq:
             # generate own dash sequence
             lst.append(
@@ -494,7 +494,7 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
 
         if len(lst) > 0:
             return ", ".join(lst)
-
+    print(f"line style: {line_style}")
     return {
         "": None,
         "None": None,

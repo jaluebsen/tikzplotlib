@@ -711,7 +711,7 @@ def _mpl_cmap2pgf_cmap(cmap, data):
 def _handle_linear_segmented_color_map(cmap, data):
     assert isinstance(cmap, mpl.colors.LinearSegmentedColormap)
 
-    if cmap.is_gray():
+    if cmap.is_grey():
         is_custom_colormap = False
         return ("blackwhite", is_custom_colormap)
 
@@ -817,7 +817,7 @@ def _handle_listed_color_map(cmap, data):
         # 'autumn': 'autumn',
         # 'cool': 'cool',
         # 'copper': 'copper',
-        # 'gray': 'blackwhite',
+        # 'grey': 'blackwhite',
         # 'hot': 'hot2',
         # 'hsv': 'hsv',
         # 'jet': 'jet',

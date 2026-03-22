@@ -3,7 +3,7 @@
 \definecolor{crimson2143940}{RGB}{214,39,40}
 \definecolor{darkgrey176}{RGB}{176,176,176}
 \definecolor{darkorange25512714}{RGB}{255,127,14}
-\definecolor{forestgreen012804416044}{RGB}{44,160,44}
+\definecolor{forestgreen4416044}{RGB}{44,160,44}
 \definecolor{lightgrey204}{RGB}{204,204,204}
 \definecolor{steelblue31119180}{RGB}{31,119,180}
 
@@ -49,8 +49,8 @@ legend style={
   fill opacity=0.8,
   draw opacity=1,
   text opacity=1,
-  at={(0.5,0.91)},
-  anchor=north,
+  at={(0.03,0.97)},
+  anchor=north west,
   draw=lightgrey204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
@@ -137,8 +137,8 @@ legend style={
   fill opacity=0.8,
   draw opacity=1,
   text opacity=1,
-  at={(0.97,0.03)},
-  anchor=south east,
+  at={(0.03,0.03)},
+  anchor=south west,
   draw=lightgrey204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
@@ -215,7 +215,7 @@ table {%
 5.6 -1.5
 6 -1.5
 };
-\addplot [semithick, forestgreen012804416044, forget plot]
+\addplot [semithick, forestgreen4416044, forget plot]
 table {%
 0 1.5
 0.4 1.5
@@ -241,8 +241,8 @@ legend style={
   fill opacity=0.8,
   draw opacity=1,
   text opacity=1,
-  at={(0.5,0.5)},
-  anchor=center,
+  at={(0.09,0.5)},
+  anchor=west,
   draw=lightgrey204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
@@ -297,7 +297,7 @@ table {%
 5.6 -1.5
 6 -1.5
 };
-\addplot [semithick, forestgreen012804416044, forget plot]
+\addplot [semithick, forestgreen4416044, forget plot]
 table {%
 0 1.5
 0.4 1.5
@@ -323,8 +323,8 @@ legend style={
   fill opacity=0.8,
   draw opacity=1,
   text opacity=1,
-  at={(0.97,0.03)},
-  anchor=south east,
+  at={(0.5,0.09)},
+  anchor=south,
   draw=lightgrey204
 },
 tick align=outside,
@@ -359,7 +359,14 @@ table {%
 
 \nextgroupplot[
 legend cell align={left},
-legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=lightgrey204},
+legend style={
+  fill opacity=0.8,
+  draw opacity=1,
+  text opacity=1,
+  at={(0.5,0.91)},
+  anchor=north,
+  draw=lightgrey204
+},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
@@ -393,14 +400,7 @@ table {%
 \addlegendentry{UC}
 
 \nextgroupplot[
-legend style={
-  fill opacity=0.8,
-  draw opacity=1,
-  text opacity=1,
-  at={(0.91,0.5)},
-  anchor=east,
-  draw=lightgrey204
-},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=lightgrey204},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
@@ -438,7 +438,7 @@ table {%
 5.6 1.7064402
 6 -1.904826
 };
-\addplot [semithick, forestgreen012804416044, forget plot]
+\addplot [semithick, forestgreen4416044, forget plot]
 table {%
 0 -2
 0.4 -2

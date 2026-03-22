@@ -1,6 +1,6 @@
+import re
 import matplotlib as mpl
 import numpy as np
-import matplotlib as mpl
 
 
 def mpl_common_texification(string):
@@ -11,16 +11,28 @@ def mpl_common_texification(string):
     # which has been moved around and is not available in recent versions.
     # It escapes special TeX characters.
     s = str(string)
-    s = s.replace("\\", r"\textbackslash")
-    s = s.replace("&", r"\&")
-    s = s.replace("%", r"\%")
-    s = s.replace("$", r"\$")
-    s = s.replace("#", r"\#")
-    s = s.replace("_", r"\_")
-    s = s.replace("{", r"\{")
-    s = s.replace("}", r"\}")
-    s = s.replace("~", r"\textasciitilde{}")
-    s = s.replace("^", r"\textasciicircum{}")
+
+    # Split into math and non-math parts
+    parts = re.split(r"(\$[^$]+\$)", s)
+    for i, part in enumerate(parts):
+        if i % 2 == 0:
+            # non-math part
+            part = part.replace("\\", r"\textbackslash")
+            part = part.replace("&", r"\&")
+            part = part.replace("%", r"\%")
+            part = part.replace("$", r"\$")
+            part = part.replace("#", r"\#")
+            part = part.replace("_", r"\_")
+            part = part.replace("{", r"\{")
+            part = part.replace("}", r"\}")
+            part = part.replace("~", r"\textasciitilde{}")
+            part = part.replace("^", r"\textasciicircum{}")
+            parts[i] = part
+        else:
+            # math part: leave as is
+            pass
+
+    s = "".join(parts)
     # In matplotlib, this is only done for non-usetex.
     # We do it for all.
     s = s.replace("−", "-")  # U+2212
@@ -31,7 +43,7 @@ from . import _color
 
 def _common_texification(string):
     # Work around <https://github.com/matplotlib/matplotlib/issues/15493>
-    return mpl_common_texification(string).replace("&", "\\&")
+    return mpl_common_texification(string)
 
 
 class Axes:
@@ -460,7 +472,10 @@ class Axes:
 
     def _subplot(self, obj, data):
         # https://github.com/matplotlib/matplotlib/issues/7225#issuecomment-252173667
-        geom = obj.get_subplotspec().get_topmost_subplotspec().get_geometry()
+        subplotspec = obj.get_subplotspec()
+        if subplotspec is None:
+            return
+        geom = subplotspec.get_topmost_subplotspec().get_geometry()
 
         self.nsubplots = geom[0] * geom[1]
         if self.nsubplots > 1:
@@ -598,6 +613,8 @@ def _get_ticks(data, xy, ticks, ticklabels):
         clean_label = label
         if clean_label.startswith("$\\mathdefault{") and clean_label.endswith("}$"):
             clean_label = clean_label[len("$\\mathdefault{") : -2]
+        elif clean_label.startswith("$") and clean_label.endswith("$"):
+            clean_label = clean_label[1:-1]
 
         if not ticklabel.get_visible():
             is_label_required = True
@@ -610,12 +627,22 @@ def _get_ticks(data, xy, ticks, ticklabels):
             # Replace unicode minus with hyphen
             label_float = float(clean_label.replace("−", "-"))
         except ValueError:
-            is_label_required = True
-            break
-        else:
-            if abs(label_float - tick) > 1.0e-10 + 1.0e-10 * abs(tick):
+            import re
+
+            m = re.match(r"^(.+?)\^\{(.+?)\}$", clean_label.replace("−", "-"))
+            if m:
+                try:
+                    label_float = float(m.group(1)) ** float(m.group(2))
+                except ValueError:
+                    is_label_required = True
+                    break
+            else:
                 is_label_required = True
                 break
+            
+        if abs(label_float - tick) > 1.0e-10 + 1.0e-10 * abs(tick):
+            is_label_required = True
+            break
 
     pgfplots_ticks = []
     pgfplots_ticklabels = []
@@ -628,9 +655,10 @@ def _get_ticks(data, xy, ticks, ticklabels):
             label = label[len("$\\mathdefault{") : -2]
             label = label.replace("−", "-")  # U+2212
 
+        label = _common_texification(label)
         if "," in label:
             label = "{" + label + "}"
-        pgfplots_ticklabels.append(_common_texification(label))
+        pgfplots_ticklabels.append(label)
 
     # note: ticks may be present even if labels are not, keep them for grid lines
     for tick in ticks:
@@ -711,7 +739,7 @@ def _mpl_cmap2pgf_cmap(cmap, data):
 def _handle_linear_segmented_color_map(cmap, data):
     assert isinstance(cmap, mpl.colors.LinearSegmentedColormap)
 
-    if cmap.is_grey():
+    if getattr(cmap, "is_gray", getattr(cmap, "is_grey", lambda: False))():
         is_custom_colormap = False
         return ("blackwhite", is_custom_colormap)
 

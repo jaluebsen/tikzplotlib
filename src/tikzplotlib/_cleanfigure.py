@@ -496,13 +496,14 @@ def _remove_NaNs(data):
             )
         ]
 
-    id_first = np.argwhere(np.logical_not(id_nan))[0]
-    id_last = np.argwhere(np.logical_not(id_nan))[-1]
+    valid_indices = np.argwhere(np.logical_not(id_nan)).reshape((-1,))
 
-    if _isempty(id_first):
+    if _isempty(valid_indices):
         # remove entire data
         id_remove = np.arange(len(data))
     else:
+        id_first = valid_indices[0]
+        id_last = valid_indices[-1]
         id_remove = np.concatenate(
             [np.arange(0, id_first), id_remove, np.arange(id_last + 1, len(data))]
         )

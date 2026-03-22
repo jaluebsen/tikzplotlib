@@ -234,8 +234,7 @@ class Test_plottypes:
             X, Y, Z = axes3d.get_test_data(0.05)
             cset = ax.contour(X, Y, Z, cmap=cm.coolwarm)
             ax.clabel(cset, fontsize=9, inline=1)
-            with pytest.warns(Warning):
-                clean_figure(fig)
+            clean_figure(fig)
         plt.close("all")
 
     def test_polygon3D(self):

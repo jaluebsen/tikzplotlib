@@ -126,14 +126,14 @@ Notably, [3D plots don't work](https://github.com/matplotlib/matplotlib/issues/7
 
 ### Installation
 
-tikzplotlib is [available from the Python Package
-Index](https://pypi.org/project/tikzplotlib/), so simply do
+This version of tikzplotlib is currently not available from the Python Package
+Index. But you can simply download the code and run
 
 ```
-pip install tikzplotlib
+pip install .
 ```
 
-to install.
+inside the downloaded folder to install.
 
 ### Usage
 
@@ -214,12 +214,6 @@ to install.
     The feature originated from the
     [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) project and is adapted to
     matplotlib.
-
-### Contributing
-
-If you experience bugs, would like to contribute, have nice examples of what tikzplotlib
-can do, or if you are just looking for more information, then please visit
-[tikzplotlib's GitHub page](https://github.com/nschloe/tikzplotlib).
 
 ### Testing
 

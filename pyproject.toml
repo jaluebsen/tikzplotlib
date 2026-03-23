@@ -32,6 +32,7 @@ dependencies = [
   "matplotlib >= 1.4.0",
   "numpy",
   "Pillow",
+  "webcolors >= 24.8.0",
 ]
 
 [project.urls]
